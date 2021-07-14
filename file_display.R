@@ -19,6 +19,19 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       
+      
+      tags$style(
+        HTML(
+          ".error {
+                    background-color: red;
+                    color: white;
+                    }
+                    .success {
+                    background-color: green;
+                    color: white;
+                    }"
+        )),
+      
       # Image Selection Section
       h3("Seal Image Quality Check"),
       selectInput(
@@ -54,7 +67,7 @@ ui <- fluidPage(
 #           SERVER 
 #
 #----------------------------#
-server <- function(input, output) {
+server <- function(input, output, session) {
   
   # create vector of possible answers
   answer_options <- c("Keep",
@@ -69,6 +82,8 @@ server <- function(input, output) {
   
   ### 1. create a datatable with checkboxes ###
   # taken from https://github.com/rstudio/DT/issues/93/#issuecomment-111001538
+  
+  
   # a) function to create inputs
   shinyInput <- function(FUN, ids, ...) {
     inputs <- NULL
@@ -77,12 +92,14 @@ server <- function(input, output) {
     })
     inputs
   }
+  
   # b) create dataframe with the checkboxes
   df <- data.frame(
     Choice = answer_options,
     Selection = shinyInput(checkboxInput, answer_options),
     stringsAsFactors = FALSE
   )
+  
   # c) create the datatable
   output$checkbox_table <- DT::renderDataTable(
     df,
@@ -94,7 +111,6 @@ server <- function(input, output) {
       drawCallback = JS('function() { Shiny.bindAll(this.api().table().node()); } ')
     )
   )
-  
   
   
   ### 2. save rows when user hits submit -- either to new or existing csv ###
@@ -123,16 +139,14 @@ server <- function(input, output) {
                           easyClose = TRUE,
                           footer = NULL,
                           class = "success")) 
-    # reset all checkboxes and username
+    
+    # # reset all checkboxes and username
+    # updateCheckboxInput(session, answer_options, value = FALSE)
+    
     sapply(answer_options, function(x) updateCheckboxInput(session, x, value = FALSE))
-    updateTextInput(session, "username", value = "")
+    # updateTextInput(session, "Choice", value = "")
     
   })
-  
-  
-  
-  
-  
 }
 
 
