@@ -3,15 +3,23 @@ title: "SealViewer"
 output: html_document
 ---
 
-Packages and directories
+Libraries 
 
-Modify the root_dir variable to reflect the location of the directory on your own computer
+Note: Modify the root_dir variable to reflect the location of the directory on your own computer
 
 ```{r setup, include=FALSE}
+library(tidyverse)
 library(shiny)
 library(DT)
 library(filesstrings)
 
+```
+
+
+
+Directories and imagery locations
+
+```{Directories}
 
 root_dir <- "C:/Users/wmichael/Google Drive/Projects/ShinyViewer"
 www_dir <- paste0(root_dir, "/www")
@@ -19,10 +27,10 @@ checked_dir <- paste0(root_dir, "/checked")
 
 image.directory <- c(list.files(www_dir,
                                 full.names = TRUE))
-
-
-
 ```
+
+
+
 
 
 SealViwer application 
@@ -236,6 +244,16 @@ file.move(toCopy, checked_dir)
 
 ```{csv cleaner}
 
+csv <- read_csv("SealViewerResponses.csv")
+filtered_csv <-  csv %>% 
+  filter(Selection == "TRUE")
+
+```
+
+
+
+```{string filter}
+
 pattern1 <- image.directory[[1]]
 
 str_view(pattern1, ".png")
@@ -247,4 +265,3 @@ y[[1]][3] %>%
   str_split("_")
 
 ```
-
