@@ -19,7 +19,7 @@ library(filesstrings)
 
 Directories and imagery locations
 
-```{Directories}
+```{r Directories}
 
 root_dir <- "C:/Users/wmichael/Google Drive/Projects/ShinyViewer"
 www_dir <- paste0(root_dir, "/www")
@@ -67,16 +67,14 @@ ui <- fluidPage(
       # Image Selection Section
       h3("Seal Image Quality Check"),
       
-      actionButton("previous", "Previous"),
-      actionButton("next", "Next"),
+      actionButton(inputId = "previous", "Previous"),
+      actionButton(inputId = "next", "Next"),
+     
       
       
       # Choice Selection Section
       p("Please check the appropriate box below"),
-      DT::dataTableOutput('checkbox_table'),
-      br(),
-      actionButton(inputId = "submit", label= "Log Selection")
-      ), 
+      DT::dataTableOutput('checkbox_table')), 
     
     #----------------------------#
     # Main panel contents
@@ -111,10 +109,73 @@ server <- function(input, output, session) {
   
   observeEvent(input[["previous"]], {
     index(max(index()-1, 1))
+    
+    responses <- data.frame(ImageID = image.directory[index()],
+                            Choice = answer_options,
+                            Selection = sapply(answer_options, function(i) input[[i]], USE.NAMES = FALSE))
+    
+    
+    
+    # if file doesn't exist in current wd, col.names = TRUE + append = FALSE
+    # if file does exist in current wd, col.names = FALSE + append = TRUE
+    if(!file.exists("SealViewerResponses.csv")) {
+      write.table(responses, "SealViewerResponses.csv", 
+                  col.names = TRUE, 
+                  row.names = FALSE,
+                  append = FALSE,
+                  sep = ",")
+    } else {
+      write.table(responses, "SealViewerResponses.csv", 
+                  col.names = FALSE, 
+                  row.names = FALSE,
+                  append = TRUE, 
+                  sep = ",")
+    }
+    # tell user form was successfully submitted
+    showModal(modalDialog("Successfully submitted",
+                          easyClose = TRUE,
+                          footer = NULL,
+                          class = "success")) 
+    
+    # # reset all checkboxes and username
+    sapply(answer_options, function(x) updateCheckboxInput(session, x, value = FALSE))
+    
+    
   })
   
   observeEvent(input[["next"]], {
     index(min(index()+1, length(image.directory)))
+    
+    responses <- data.frame(ImageID = image.directory[index()],
+                            Choice = answer_options,
+                            Selection = sapply(answer_options, function(i) input[[i]], USE.NAMES = FALSE))
+    
+    
+    
+    # if file doesn't exist in current wd, col.names = TRUE + append = FALSE
+    # if file does exist in current wd, col.names = FALSE + append = TRUE
+    if(!file.exists("SealViewerResponses.csv")) {
+      write.table(responses, "SealViewerResponses.csv", 
+                  col.names = TRUE, 
+                  row.names = FALSE,
+                  append = FALSE,
+                  sep = ",")
+    } else {
+      write.table(responses, "SealViewerResponses.csv", 
+                  col.names = FALSE, 
+                  row.names = FALSE,
+                  append = TRUE, 
+                  sep = ",")
+    }
+    # tell user form was successfully submitted
+    showModal(modalDialog("Successfully submitted",
+                          easyClose = TRUE,
+                          footer = NULL,
+                          class = "success")) 
+    
+    # # reset all checkboxes and username
+    sapply(answer_options, function(x) updateCheckboxInput(session, x, value = FALSE))
+    
   })
   
   output$myImage <- renderImage({
@@ -160,43 +221,6 @@ server <- function(input, output, session) {
       drawCallback = JS('function() { Shiny.bindAll(this.api().table().node()); } ')
     )
   )
-  
-  
-  
-  
-  ### 2. save rows when user hits submit -- either to new or existing csv ###
-  observeEvent(input$submit, {
-    responses <- data.frame(ImageID = image.directory[index()],
-                            Choice = answer_options,
-                            Selection = sapply(answer_options, function(i) input[[i]], USE.NAMES = FALSE))
-    
-    
-    
-    # if file doesn't exist in current wd, col.names = TRUE + append = FALSE
-    # if file does exist in current wd, col.names = FALSE + append = TRUE
-    if(!file.exists("SealViewerResponses.csv")) {
-      write.table(responses, "SealViewerResponses.csv", 
-                  col.names = TRUE, 
-                  row.names = FALSE,
-                  append = FALSE,
-                  sep = ",")
-    } else {
-      write.table(responses, "SealViewerResponses.csv", 
-                  col.names = FALSE, 
-                  row.names = FALSE,
-                  append = TRUE, 
-                  sep = ",")
-    }
-    # tell user form was successfully submitted
-    showModal(modalDialog("Successfully submitted",
-                          easyClose = TRUE,
-                          footer = NULL,
-                          class = "success")) 
-    
-    # # reset all checkboxes and username
-    sapply(answer_options, function(x) updateCheckboxInput(session, x, value = FALSE))
-
-  })
 }
 
 
