@@ -30,10 +30,12 @@ image.directory <- c(list.files(www_dir,
 ```
 
 
+To add: Area Overestimation
+        Area underestimation 
+        Possible pup
 
 
-
-SealViwer application 
+SealViewer application 
 
 ```{r SealViewer Application}
 
@@ -100,9 +102,10 @@ server <- function(input, output, session) {
   
   # create vector of possible answers
   answer_options <- c("Keep",
-                      "Multiple_seals",
-                      "Area_estimation_error",
-                      "Other_error")
+                      "Multiple seals in image",
+                      "Area understimated",
+                      "Area overestimated",
+                      "Other error (e.g. ice edge, etc.)")
   
   
   index <- reactiveVal(1)
