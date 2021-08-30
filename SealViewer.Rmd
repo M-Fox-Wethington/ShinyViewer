@@ -134,11 +134,11 @@ server <- function(input, output, session) {
                   append = TRUE, 
                   sep = ",")
     }
-    # tell user form was successfully submitted
-    showModal(modalDialog("Successfully submitted",
-                          easyClose = TRUE,
-                          footer = NULL,
-                          class = "success")) 
+    # # tell user form was successfully submitted
+    # showModal(modalDialog("Successfully submitted",
+    #                       easyClose = TRUE,
+    #                       footer = NULL,
+    #                       class = "success")) 
     
     # # reset all checkboxes and username
     sapply(answer_options, function(x) updateCheckboxInput(session, x, value = FALSE))
@@ -170,11 +170,11 @@ server <- function(input, output, session) {
                   append = TRUE, 
                   sep = ",")
     }
-    # tell user form was successfully submitted
-    showModal(modalDialog("Successfully submitted",
-                          easyClose = TRUE,
-                          footer = NULL,
-                          class = "success")) 
+    # # tell user form was successfully submitted
+    # showModal(modalDialog("Successfully submitted",
+    #                       easyClose = TRUE,
+    #                       footer = NULL,
+    #                       class = "success")) 
     
     # # reset all checkboxes and username
     sapply(answer_options, function(x) updateCheckboxInput(session, x, value = FALSE))
